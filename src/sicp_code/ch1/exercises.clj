@@ -78,3 +78,70 @@
 
 ;; (test 0 (p))
 
+;; Exercise 1.6: new if
+(defn new-if
+  [predicate then else]
+  (cond predicate then
+        :else else))
+
+;; (new-if (= 2 3) 0 5)
+;; (new-if (= 1 1) 0 5)
+
+;; problematic call
+(defn sqrt-iter
+  [guess x]
+  (new-if (code/good-enough? guess x)
+          guess
+          (sqrt-iter (code/improve guess x)
+                     x)))
+
+;; (sqrt-iter 1 9)
+
+;; Explanation: while the special form "if" evaluates their then/else clases
+;; depending on the value of the predicate passed to it, the "new-if" is a
+;; new compound procedure, which means that it needs to evaluate its arguments
+;; before being able to execute its actual instructions. Using "new-if" in a
+;; recursive approach will generate an infinite loop, since the interpreter
+;; will evaluate the function over and over 'til the stack gets overflowed.
+
+;; Exercise 1.7; define a new sqrt-iter procedure to use the delta of our guess
+;; as criteria of our predicate to stop recursion
+(defn average [x y]
+    (/ (+ x y) 2.0))
+
+(defn good-enough? [guess prev-guess]
+  (< (abs (- guess prev-guess)) 0.000001))
+
+(defn improved-sqrt [x]
+  (defn improve [guess x]
+    (average guess (/ x guess)))
+  (defn sqrt-iter
+    [guess x prev-guess]
+      (if (good-enough? guess prev-guess)
+        guess
+        (recur (improve guess x)
+               x
+               guess)))
+  (sqrt-iter 1.0 x 0.0))
+
+;; (improved-sqrt 10000)
+;; (improved-sqrt 2)
+
+;; Exercise 1.8
+(defn square [x] (* x x))
+
+(defn cube-root [x]
+  (defn improve [guess x]
+    (/ (+ (/ x (square guess)) (* 2 guess))
+       3))
+  (defn cube-root-iter
+    [guess x prev-guess]
+    (if (good-enough? guess prev-guess)
+      guess
+      (recur (improve guess x)
+             x
+             guess)))
+  (cube-root-iter 1.0 x 0.0))
+
+;; (cube-root 512)
+;; (cube-root 8000)
