@@ -145,3 +145,58 @@
 
 ;; (cube-root 512)
 ;; (cube-root 8000)
+
+;; Exercise 1.9: using the substitution model, illustrate the proces generated
+;; by each procedur in ealuating (+ 4 5).
+
+(defn exercise-1.9 []
+  (defn + [a b]
+    (if (= a 0)
+      b
+      (inc (+ (dec a) b))))
+  (defn + [a b]
+    (if (= a 0)
+      b
+      (+ (dec a) (inc b)))))
+
+
+;; evaluating (+ 4 5) in the first version
+;; (inc (+ 3 5))
+;; (inc (inc (+ 2 5)))
+;; (inc (inc (inc (+ 1 5))))
+;; (inc (inc (inc (inc (+ 0 5)))))
+;; (inc (inc (inc (inc 5))))
+;; (inc (inc (inc 6)))
+;; (inc (inc 7))
+;; (inc 8)
+;; 9
+;; conclusion: recursive process
+
+;; evaluating (+ 4 5) in the second version
+;; (+ 3 6)
+;; (+ 2 7)
+;; (+ 1 8)
+;; (+ 0 9)
+;; 9
+;; conclusion: iterative process
+
+;; Exercise 1.10: Ackerman's function
+(defn A [x y]
+  (cond (= y 0) 0
+        (= x 0) (* 2 y)
+        (= y 1) 2
+        :else (A (- x 1)
+                 (A x (- y 1)))))
+
+(A 1 10) ;; => 1024
+(A 2 4) => ;; 65536
+(A 3 3)
+
+(defn exercise-1-10 []
+  (defn f [n] (A 0 n)) ;; => f(x) = 2x
+  (defn g [n] (A 1 n)) ;; => g(x) = 2^x
+  (defn h [n] (A 2 n)) ;; => h(x) = ??
+  (defn k [n] (* 5 n n)); => k(x) = 2x^2
+  (println (f 8) (g 6) (h 4) (k 4)))
+
+;; (exercise-1-10)
