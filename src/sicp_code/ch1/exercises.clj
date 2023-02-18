@@ -149,15 +149,15 @@
 ;; Exercise 1.9: using the substitution model, illustrate the proces generated
 ;; by each procedur in ealuating (+ 4 5).
 
-(defn exercise-1.9 []
-  (defn + [a b]
-    (if (= a 0)
-      b
-      (inc (+ (dec a) b))))
-  (defn + [a b]
-    (if (= a 0)
-      b
-      (+ (dec a) (inc b)))))
+;; (defn exercise-1.9 []
+;;   (defn + [a b]
+;;     (if (= a 0)
+;;       b
+;;       (inc (+ (dec a) b))))
+;;   (defn + [a b]
+;;     (if (= a 0)
+;;       b
+;;       (+ (dec a) (inc b)))))
 
 
 ;; evaluating (+ 4 5) in the first version
@@ -189,7 +189,7 @@
                  (A x (- y 1)))))
 
 (A 1 10) ;; => 1024
-(A 2 4) => ;; 65536
+(A 2 4) ;; => 65536
 (A 3 3)
 
 (defn exercise-1-10 []
@@ -200,3 +200,53 @@
   (println (f 8) (g 6) (h 4) (k 4)))
 
 ;; (exercise-1-10)
+
+;; Exercise 1.11
+;; Function defined by;
+;; f(n) = n if n < 3 && f(n) = f(n - 1) + 2f(n - 2) + 3f(n - 3) if n >= 3
+
+;; recursive
+(defn recursive-1-11 [x]
+  (defn f [n]
+    (cond (< n 3) n
+          :else (+ (f (- n 1))
+                   (* 2 (f (- n 2)))
+                   (* 3 (f (- n 3))))))
+  (f x))
+
+;; (dotimes [n 10]
+;;   (println (recursive-1-11 n)))
+
+
+;; iterative
+(defn iterative-1-11 [x]
+  (defn f [n]
+    (defn iter [i fi1 fi2 fi3]
+      (if (= i (+ n 1))
+        fi1
+        (iter (+ i 1)
+              (+ fi1 (* 2 fi2) (* 3 fi3))
+              fi1
+              fi2)))
+    (if (< n 3)
+      n
+      (iter 3 2 1 0)))
+  (f x))
+
+;; (dotimes [n 10]
+;;   (println (iterative-1-11 n)))
+
+;; Exercise 1.12
+(defn pascal-triangle [row]
+  (defn row-recursive [n]
+    (cond (= n 0) [1]
+          (= n 1) [1 1]
+          :else (let [prev-row (row-recursive (- n 1))]
+                  (let [new-row (map-indexed (fn [index items]
+                                               (+ (first items) (second items)))
+                                             (partition 2 1 prev-row))]
+                    (conj (apply vector (cons 1 new-row)) 1)))))
+  (row-recursive row))
+
+;; (dotimes [n 15]
+;;   (println (pascal-triangle n)))
